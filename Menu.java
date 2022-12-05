@@ -14,18 +14,18 @@ public class Menu {
     private String[] menuOptions = {"Exit", "List Products", "Buy Product", "Find Product", "Show Cart", "Checkout"};
     private Scanner scanner;
     private Shop shop;
+    private Cart cart;
     /**
      * Class constructor, which expects a Scanner object
      * It allows for the user to specify how a Scanner is to
      * be configured outside this class and for basic inversion of control.
      * @param scanner takes in a Scanner object to initialize
      */
-    public Menu(Scanner scanner, Shop shop) {
+    public Menu(Scanner scanner, Shop shop, Cart cart) {
         this.scanner = scanner;
         this.shop = shop;
+        this.cart = cart;
     }
-
-
     /**
      * Prints the menu to standard output, using the class's menuOptions array.
      * It accepts user input using the encapsulated Scanner instance.
@@ -41,13 +41,20 @@ public class Menu {
             } else if (choice == 2) {
                 System.out.println("Please enter the ID of the product you would like to purchase:");
                 int itemToBuy = getNextIntFromUser();
+                
+                try {
+                    addToCart(itemToBuy);
+                } catch (Exception ex) {
+                    System.out.println("That item ID is invalid and could not be added to the cart.");
+                }
+                /*
                 if (itemToBuy >= 0 && itemToBuy < shop.numItems){
                     //get item, call add to cart
-                    shop.addToCartById(itemToBuy);
+                    addToCart(itemToBuy);
                 } else {
                     System.out.println("That item ID is invalid and could not be added to the cart.");
                 }
-                
+                */
             } else if (choice == 3) {
                 System.out.println("Enter the item to search for:");
                 String itemToFind = getNextStringLineFromUser();
@@ -58,15 +65,21 @@ public class Menu {
                     System.out.println(shop.getProductName(result) + " was found and its product id is " + result);
                 }
             } else if (choice == 4) {
-                shop.cartDetails();
+                cart.showDetails();
             } else if (choice == 5) {
-                shop.cartCheckout();
+                cart.checkout();
             }
             printMenu();
             choice = getNextIntFromUser();
         }
         exit();
     }
+    
+    //cart function since cart is private
+    public void addToCart(int id){
+        Product product = shop.getProductById(id);
+        cart.addItem(product);
+    } 
 
     /**
      * Asks the user to enter their name.
@@ -76,24 +89,21 @@ public class Menu {
         System.out.println("Hello. Please enter your name:");
         String name = scanner.nextLine();
 
-        System.out.println("Welcome " + name + " to " + "T-Shirt Mart");
+        System.out.println("Welcome " + name + " to " + shop.getName());
     }
 
     /**
      * Prints the menu header and menu options.
      */
     private void printMenu() {
-        System.out.println();
-        System.out.println("--Main Menu--");
-        System.out.println("Select an option using one of the numbers shown");
-        System.out.println();
+        String menu = String.format("%n--Main Menu--%nSelect an option using one of the numbers shown%n");
+        System.out.println(menu);
 
         for (int i = 0; i < menuOptions.length; i++) {
             System.out.print(i + ": ");
             System.out.println(menuOptions[i]);
         }
     }
-
     /**
      * Prints an exit statement and closes the scanner object.
      */
@@ -101,7 +111,6 @@ public class Menu {
         System.out.println("Exiting now. Goodbye.");
         scanner.close();
     }
-
     /**
      * Collects next user-entered int.
      * @return integer value denoting the user selection
@@ -109,7 +118,6 @@ public class Menu {
     private int getNextIntFromUser() {
         return scanner.nextInt();
     }
-
     /**
      * Skips a line of empty input from the scanner's input stream
      * and then returns the next available line.

@@ -4,14 +4,10 @@ import java.util.ArrayList;
 public class Shop{
     private String name;
     private ArrayList<Product> products;
-    private Cart cart;
-    
-    public int numItems;
-    
+        
     public Shop(String name, ArrayList<Product> products) {
+        this.name = name;
         this.products = products;
-        this.numItems = products.size();
-        this.cart = new Cart();
     }
     
     public String getName(){
@@ -34,18 +30,14 @@ public class Shop{
         return -1;
     }
     
+    // this maybe can replace getProductName
+    public Product getProductById(int id){
+        return products.get(id);
+    }
+    
+    //this is to return product name since shop products are private outside shop
     public String getProductName(int id){
         return products.get(id).getName();
     }
     
-    public void addToCartById(int id){
-        cart.addItem(products.get(id));
-    } 
-    
-    public void cartDetails(){
-        cart.showDetails();
-    }
-    public void cartCheckout(){
-        cart.checkout();
-    }
 }

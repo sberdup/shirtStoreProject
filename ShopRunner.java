@@ -20,16 +20,9 @@ public class ShopRunner {
      * @param args Command line arguments to the application
      */
     public static void main(@Nullable String[] args) {
-        Product[] productArray = {new Product(0, "Crew Neck", 20.00), new Product(1, "V-Neck", 20.00), new Product(2, "Polo", 25.50), new Product(3, "Boat Neck", 30.25), new Product(4, "Tank Top", 15.75)};
-        
-        ArrayList<Product> products = new ArrayList<>();
-        for (Product product : productArray){
-            products.add(product);
-        }
-        // need to make the array first before passing it to shop. can't create two things at once it seems
-        // could not initialize using .asList() so for each was used to .add()
+        ArrayList<Product> products = new ArrayList<>(Arrays.asList(new Product(0, "Crew Neck", 20.00), new Product(1, "V-Neck", 20.00), new Product(2, "Polo", 25.50), new Product(3, "Boat Neck", 30.25), new Product(4, "Tank Top", 15.75)));
         Shop shop = new Shop("T-Shirt Mart", products);
-        Menu menu = new Menu(new Scanner(new InputStreamReader(System.in, Charset.forName("UTF-8"))), shop);
+        Menu menu = new Menu(new Scanner(new InputStreamReader(System.in, Charset.forName("UTF-8"))), shop, new Cart());
         menu.greet();
         menu.executeMenu();
     }

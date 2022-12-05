@@ -38,7 +38,6 @@ public class Cart {
                 for (Product item : items){
                     String output = String.format("%s: $%.2f", item.getName(), item.getPrice());
                     System.out.println(output);
-                    //System.out.println(item.getName() + ": $"
                 }
             System.out.println(string2);
         }

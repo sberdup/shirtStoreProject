@@ -5,6 +5,7 @@ public class Product {
     private double price;
     private int id;
     
+    //switched to bigdecimal for price
     public Product(int id, String name, double price){
         this.id = id;
         this.name = name;
