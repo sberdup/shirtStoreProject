@@ -1,14 +1,15 @@
 package com.ata;
 import java.util.ArrayList;
+import java.math.BigDecimal;
 
 public class Cart {
     private ArrayList<Product> items = new ArrayList<>();
-    private double total = 0;
+    private BigDecimal total = new BigDecimal(0);
     private double taxRate = 10.00;
     
     public void addItem(Product p){
         items.add(p);
-        total += p.getPrice();
+        total = total.add(p.getPrice());
         System.out.println(p.getName() + " has been added to your cart.");
     }
     
@@ -20,9 +21,7 @@ public class Cart {
         if (items.size() == 0){
             System.out.println("Your cart is currently empty. Please add at least one product to check out.");
         } else {
-            String taxTotal = String.format("Your total is $%.2f", (total * (1 + taxRate/100)));
-            System.out.println(taxTotal);
-            System.out.println("Thank you for shopping at T-Shirt Mart.");
+            System.out.println(String.format("Your total is $%.2f%nThank you for shopping at T-Shirt Mart.", (total.doubleValue() * (1 + taxRate/100))));
             empty();
         }
     }
@@ -31,16 +30,26 @@ public class Cart {
         if (items.size() == 0){
             System.out.println("The cart is empty. Please add at least one product to see it in the cart.");
         } else {
-            double taxTotal = total * (1 + taxRate/100);
-            String string1 = String.format("--Cart--%nItem Count: %d%nItems:", items.size());
-            String string2 = String.format("%nPre-Tax Total: $%.2f%nPost-Tax Total (%.2f%% Tax): $%.2f", total, taxRate, taxTotal);
-            System.out.println(string1);
-                for (Product item : items){
-                    String output = String.format("%s: $%.2f", item.getName(), item.getPrice());
-                    System.out.println(output);
-                }
-            System.out.println(string2);
+            StringBuilder output = new StringBuilder();
+            System.out.println(appendCartTotalsToStringBuilder(appendItemsWithPricesToStringBuilder(appendCartHeaderToStringBuilder(output))).toString());
         }
+    }
+    
+    private StringBuilder appendCartHeaderToStringBuilder(StringBuilder sb){
+        sb.append(String.format("--Cart--%nItem Count: %d%nItems:", items.size()));
+        return sb;
+    }
+    private StringBuilder appendItemsWithPricesToStringBuilder(StringBuilder sb){
+        for (Product item : items){
+                    sb.append(String.format("%n%s: $%.2f", item.getName(), item.getPrice()));
+         }
+        return sb;
+    }
+    private StringBuilder appendCartTotalsToStringBuilder(StringBuilder sb){
+        double taxTotal = total.doubleValue() * (1 + taxRate/100);
+        //the first %n merely pushes it from the previous line, two are need to get a blank line
+        sb.append(String.format("%n%nPre-Tax Total: $%.2f%nPost-Tax Total (%.2f%% Tax): $%.2f", total, taxRate, taxTotal));
+        return sb;
     }
     
 }

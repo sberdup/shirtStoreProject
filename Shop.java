@@ -15,10 +15,12 @@ public class Shop{
     }
     
     public void printProducts(){
-        System.out.println("--Products--");
+        StringBuilder output = new StringBuilder("--Products--");
         for (Product product : products){
-            System.out.println("ID " + product.getID() + ": " + product.getName() + " - $" + product.getPrice());
+            //need to tag BigDecimal as %float when formatting
+            output.append(String.format("%nID %d: %s - $%.2f", product.getID(), product.getName(), product.getPrice()));
         }
+        System.out.println(output.toString());
     }
     
     public int findProduct(String searchText){
@@ -29,15 +31,8 @@ public class Shop{
         }
         return -1;
     }
-    
-    // this maybe can replace getProductName
+    //replaces getProductName as well
     public Product getProductById(int id){
         return products.get(id);
     }
-    
-    //this is to return product name since shop products are private outside shop
-    public String getProductName(int id){
-        return products.get(id).getName();
-    }
-    
 }

@@ -6,15 +6,15 @@ public enum MenuOption{
     private int id;
     private String displayValue;
     
+    //constructor to add props to enumerator symbols
     private MenuOption(int id, String displayValue){
         this.id = id;
         this.displayValue = displayValue;
     }
-    
+    //getters
     public int getId(){
         return id;
     }
-    
     public String getDisplayValue(){
         return displayValue;
     }

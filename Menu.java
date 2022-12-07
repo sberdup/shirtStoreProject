@@ -14,7 +14,7 @@ public class Menu {
     private Scanner scanner;
     private Shop shop;
     private Cart cart;
-    private MenuOption[] menuOptions = new MenuOption[6];
+    private MenuOption[] menuOptions;
     /**
      * Class constructor, which expects a Scanner object
      * It allows for the user to specify how a Scanner is to
@@ -25,9 +25,7 @@ public class Menu {
         this.scanner = scanner;
         this.shop = shop;
         this.cart = cart;
-        for (int i = 0; i<6; i++){
-            menuOptions[i] = MenuOption.fromOptionId(i);
-        }
+        menuOptions = MenuOption.values();
     }
     /**
      * Prints the menu to standard output, using the class's menuOptions array.
@@ -38,40 +36,33 @@ public class Menu {
     public void executeMenu() {
         printMenu();
         int choice = getNextIntFromUser();
-        while (choice != 0){
-            if (choice == 1) {
-                shop.printProducts();
-            } else if (choice == 2) {
-                System.out.println("Please enter the ID of the product you would like to purchase:");
-                int itemToBuy = getNextIntFromUser();
-                
-                try {
-                    addToCart(itemToBuy);
-                } catch (Exception ex) {
-                    System.out.println("That item ID is invalid and could not be added to the cart.");
-                }
-                
-            } else if (choice == 3) {
+        handleShopperMenuOptionSelection(MenuOption.fromOptionId(choice));
+    }
+    //handling menu options
+    private void handleShopperMenuOptionSelection(MenuOption option){
+        if (option == MenuOption.LIST_PRODUCTS) shop.printProducts();
+        else if (option == MenuOption.BUY_PRODUCT){
+            System.out.println("Please enter the ID of the product you would like to purchase:");
+            int itemToBuy = getNextIntFromUser();
+            try {
+                addToCart(itemToBuy);
+            } catch (Exception ex) {
+                System.out.println("That item ID is invalid and could not be added to the cart.");
+            }
+        } else if (option == MenuOption.FIND_PRODUCT){
                 System.out.println("Enter the item to search for:");
                 String itemToFind = getNextStringLineFromUser();
                 int result = shop.findProduct(itemToFind);
                 if (result == -1){
                     System.out.println("That product was not found.");
                 } else {
-                    System.out.println(shop.getProductName(result) + " was found and its product id is " + result);
+                    System.out.println(String.format("%s was found and its product id is %d", shop.getProductById(result).getName(), result));
                 }
-            } else if (choice == 4) {
-                cart.showDetails();
-            } else if (choice == 5) {
-                cart.checkout();
-            }
-            printMenu();
-            choice = getNextIntFromUser();
-        }
-        exit();
-    }
-    //handling menu options
-    private handleShopperMenuOptionSelection(MenuOption option){
+        } else if (option == MenuOption.SHOW_CART) cart.showDetails();
+        else if (option == MenuOption.CHECKOUT) cart.checkout();
+        
+        if (option == MenuOption.EXIT) exit();
+        else executeMenu();
     }
     
     //cart function since cart is private
@@ -87,20 +78,18 @@ public class Menu {
     public void greet() {
         System.out.println("Hello. Please enter your name:");
         String name = scanner.nextLine();
-
-        System.out.println("Welcome " + name + " to " + shop.getName());
+        System.out.println(String.format("Welcome %s to %s", name, shop.getName()));
     }
 
     /**
      * Prints the menu header and menu options.
      */
     private void printMenu() {
-        String menu = String.format("%n--Main Menu--%nSelect an option using one of the numbers shown%n");
-        System.out.println(menu);
+        StringBuilder menu = new StringBuilder(String.format("%n--Main Menu--%nSelect an option using one of the numbers shown%n"));
         for (MenuOption option : menuOptions){
-            System.out.print(option.getId() + ": ");
-            System.out.println(option.getDisplayValue());
+            menu.append(String.format("%n%d: %s", option.getId(), option.getDisplayValue())); 
         }
+        System.out.println(menu.toString());
     }
     /**
      * Prints an exit statement and closes the scanner object.

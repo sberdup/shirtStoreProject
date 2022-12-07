@@ -1,12 +1,14 @@
 package com.ata;
+import java.math.BigDecimal;
 
 public class Product {
     private String name;
-    private double price;
+    private BigDecimal price;
     private int id;
-    
-    //switched to bigdecimal for price
-    public Product(int id, String name, double price){
+    //BIGDECIMAL for price can work if you use BigDecimal ex = new BigDecimal(100); 
+    //REQUIRES IMPORTING java.math.BigDecimal
+    //CLASS **NOT** PRIMITIVE
+    public Product(int id, String name, BigDecimal price){
         this.id = id;
         this.name = name;
         this.price = price;
@@ -14,7 +16,7 @@ public class Product {
     public String getName(){
         return name;
     }
-    public double getPrice(){
+    public BigDecimal getPrice(){
         return price;
     }
     public int getID(){
