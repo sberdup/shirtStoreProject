@@ -11,10 +11,10 @@ import java.util.Scanner;
  * with respect to its menu.
  */
 public class Menu {
-    private String[] menuOptions = {"Exit", "List Products", "Buy Product", "Find Product", "Show Cart", "Checkout"};
     private Scanner scanner;
     private Shop shop;
     private Cart cart;
+    private MenuOption[] menuOptions = new MenuOption[6];
     /**
      * Class constructor, which expects a Scanner object
      * It allows for the user to specify how a Scanner is to
@@ -25,6 +25,9 @@ public class Menu {
         this.scanner = scanner;
         this.shop = shop;
         this.cart = cart;
+        for (int i = 0; i<6; i++){
+            menuOptions[i] = MenuOption.fromOptionId(i);
+        }
     }
     /**
      * Prints the menu to standard output, using the class's menuOptions array.
@@ -47,14 +50,7 @@ public class Menu {
                 } catch (Exception ex) {
                     System.out.println("That item ID is invalid and could not be added to the cart.");
                 }
-                /*
-                if (itemToBuy >= 0 && itemToBuy < shop.numItems){
-                    //get item, call add to cart
-                    addToCart(itemToBuy);
-                } else {
-                    System.out.println("That item ID is invalid and could not be added to the cart.");
-                }
-                */
+                
             } else if (choice == 3) {
                 System.out.println("Enter the item to search for:");
                 String itemToFind = getNextStringLineFromUser();
@@ -73,6 +69,9 @@ public class Menu {
             choice = getNextIntFromUser();
         }
         exit();
+    }
+    //handling menu options
+    private handleShopperMenuOptionSelection(MenuOption option){
     }
     
     //cart function since cart is private
@@ -98,10 +97,9 @@ public class Menu {
     private void printMenu() {
         String menu = String.format("%n--Main Menu--%nSelect an option using one of the numbers shown%n");
         System.out.println(menu);
-
-        for (int i = 0; i < menuOptions.length; i++) {
-            System.out.print(i + ": ");
-            System.out.println(menuOptions[i]);
+        for (MenuOption option : menuOptions){
+            System.out.print(option.getId() + ": ");
+            System.out.println(option.getDisplayValue());
         }
     }
     /**
